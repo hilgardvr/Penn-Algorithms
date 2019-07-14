@@ -44,7 +44,27 @@ public class MinHeap {
 	 * Extracts the smallest element from the heap
 	 */
 	public int extractMin() {
-		
+		if (this.size > 0) {
+			int trav = 1;
+			int min = heap[1];
+			heap[1] = heap[size];
+			while (trav * 2 <= size) {
+				int indexMin = trav * 2;
+				if (indexMin + 1 <= size && heap[indexMin + 1] < heap[indexMin]) {
+					indexMin++;
+				}
+				if (heap[trav] > heap[indexMin]) {
+					int temp = heap[indexMin];
+					heap[indexMin] = heap[trav];
+					heap[trav] = temp;
+				} else {
+					break;
+				}
+				trav = indexMin;
+			}
+			this.size--;
+			return min;
+		}		
 		return 0;
 	}
 	
@@ -59,6 +79,13 @@ public class MinHeap {
 		MinHeap h = new MinHeap(arr.length);
 		for (int i = 0; i < arr.length; i++) {
 			h.add(arr[i]);
+		}
+		for (int i = 0; i < 3; i++) {
+			System.out.println("min: " + h.extractMin());
+		}
+		System.out.println("After");
+		for (int i = 1; i <= h.size; i++) {
+			System.out.print(h.heap[i] + " ");
 		}
 		System.out.println();
 		return;
