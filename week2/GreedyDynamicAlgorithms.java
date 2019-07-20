@@ -3,25 +3,37 @@ import java.util.*;
 
 public class GreedyDynamicAlgorithms {
 
-	public static int recurseIntervals(ArraList<Interval> red, ArrayList<Interval> blue, int accumulator) {
+	public static int recurseGreedyDynamicAlgorithm(ArrayList<GreedyDynamicAlgorithms.Interval> red, ArrayList<GreedyDynamicAlgorithms.Interval> blue, int accumulator) {
+		//return if iterated through either of the  lists
 		if (blue.size() == 0) {
 			return accumulator;
 		} else if (red.size() == 0) {
 			return -1;
 		}
 
-		ArrayList<Interval> tempRed = new ArrayList<Interval>();
-		for (Inverval inter : red) {
-			if (inter.start <= blue[0].end && inter.end >= blue[0].start) {
-				tempRed.add(inter);
+		try {
+			//create list of red intervals that intersect the blue interval and sort by end time
+			ArrayList<GreedyDynamicAlgorithms.Interval> tempRed = new ArrayList<GreedyDynamicAlgorithms.Interval>();
+			for (GreedyDynamicAlgorithms.Interval inter : red) {
+				if (inter.start <= blue.get(0).finish && inter.finish >= blue.get(0).start) {
+					tempRed.add(inter);
+				}
 			}
+			GreedyDynamicAlgorithms.Interval.sortByFinishTime(tempRed);
+			int ctr = 0;
+			//System.out.println("Red interval: " + tempRed.get(tempRed.size() - 1).start + ", " + tempRed.get(tempRed.size() - 1).finish);
+			while (ctr < blue.size() && tempRed.get(tempRed.size() - 1).finish >= blue.get(ctr).start) {
+				//System.out.println("Blue: " + blue.get(ctr).start + ", " + blue.get(ctr).finish);
+				ctr++;
+			}
+			//System.out.println();
+			ArrayList<Interval> newBlue = new ArrayList<Interval>();
+			newBlue.addAll(blue.subList(ctr, blue.size()));
+			return GreedyDynamicAlgorithms.recurseGreedyDynamicAlgorithm(red, newBlue, accumulator + 1);
+		} catch (Exception e) {
+			//System.out.println("No solution found");
+			return -1;
 		}
-		Inverval.sortByFinishTime(tempRed);
-		int ctr = 0;
-		while (ctr < blue.size() && tempRed[0].end >= blue[ctr]) {
-			ctr++;
-		}
-		//remove blue[0] - blue[ctr]
 	}
 			
 
@@ -34,11 +46,11 @@ public class GreedyDynamicAlgorithms {
 	 * @param blue - the list blue intervals
 	 * @return
 	 */
-	public static int optimalIntervals(ArrayList<Interval> red, ArrayList<Interval> blue) {
+	public static int optimalGreedyDynamicAlgorithms(ArrayList<GreedyDynamicAlgorithms.Interval> red, ArrayList<GreedyDynamicAlgorithms.Interval> blue) {
 		//TODO
-		ArrayList<Interval> sortedRed = Interval.sortByStartTime(red);
-		ArrayList<Interval> sortedBlue = Interval.sortByStartTime(blue);
-		return recurseIntervals(sortedRed, sortedBlue, 0);
+		GreedyDynamicAlgorithms.Interval.sortByStartTime(red);
+		GreedyDynamicAlgorithms.Interval.sortByStartTime(blue);
+		return recurseGreedyDynamicAlgorithm(red, blue, 0);
 	}
 	
 	/**
@@ -103,6 +115,33 @@ public class GreedyDynamicAlgorithms {
 	}
 	
 	public static void main(String[] args) {
+		ArrayList<GreedyDynamicAlgorithms.Interval> blue = new ArrayList<GreedyDynamicAlgorithms.Interval>();
+		GreedyDynamicAlgorithms.Interval interval = new GreedyDynamicAlgorithms.Interval(0,2);
+		blue.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(5,5);
+		blue.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(7,10);
+		blue.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(11,13);
+		blue.add(interval);
+
+		ArrayList<GreedyDynamicAlgorithms.Interval> red = new ArrayList<GreedyDynamicAlgorithms.Interval>();
+		interval = new GreedyDynamicAlgorithms.Interval(0,4);
+		red.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(2,5);
+		red.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(4,8);
+		red.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(9,10);
+		red.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(9,11);
+		red.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(10,12);
+		red.add(interval);
+		interval = new GreedyDynamicAlgorithms.Interval(11,12);
+		red.add(interval);
+		
+		System.out.println(GreedyDynamicAlgorithms.recurseGreedyDynamicAlgorithm(red, blue, 0));
 		return;
 	}
 }
