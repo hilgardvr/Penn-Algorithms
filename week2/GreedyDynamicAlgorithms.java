@@ -47,12 +47,43 @@ public class GreedyDynamicAlgorithms {
 	 * @return
 	 */
 	public static int optimalGreedyDynamicAlgorithms(ArrayList<GreedyDynamicAlgorithms.Interval> red, ArrayList<GreedyDynamicAlgorithms.Interval> blue) {
-		//TODO
 		GreedyDynamicAlgorithms.Interval.sortByStartTime(red);
 		GreedyDynamicAlgorithms.Interval.sortByStartTime(blue);
 		return recurseGreedyDynamicAlgorithm(red, blue, 0);
 	}
 	
+	public static List<Direction> cheapestPath(int[][] grid) {
+		int xlength = grid[0].length;
+		int ylength = grid.length;
+
+		int[][] memo = new int[ylength][xlength];
+		//fill [y-> 0 - length][xlength -1]
+		memo[ylength - 1][xlength - 1] = grid[ylength - 1][xlength - 1];
+		for (int y = ylength - 2; y >= 0; y--) {
+			memo[y][xlength - 1] = memo[y + 1][xlength - 1] + grid[y][xlength - 1];
+		}
+		for (int y = ylength - 1; y >= 0; y--) {
+			for (int x = xlength - 2; x >= 0; x--) {
+				if (y < ylength - 1) {
+					if (memo[y][x+1] < memo[y+1][x]) {
+						memo[y][x] = memo[y][x+1] + grid[y][x];
+					} else {
+						memo[y][x] = memo[y+1][x] + grid[y][x];
+					}
+				} else {
+					memo[y][x] = memo[y][x + 1] + grid[y][x];
+				}
+			}
+		}
+		for (int y = 0; y < ylength; y++) {
+			for (int x = 0; x < xlength; x++) {
+				System.out.print(memo[y][x] + " ");
+			}
+			System.out.println();
+		}
+		return null;
+	}
+
 	/**
 	 * Goal: find any path of lowest cost from the top-left of the grid (grid[0][0])
 	 * to the bottom right of the grid (grid[m-1][n-1]).  Output this sequence of directions
@@ -62,6 +93,7 @@ public class GreedyDynamicAlgorithms {
 	 */
 	public static List<Direction> optimalGridPath(int[][] grid) {
 		//TODO
+		GreedyDynamicAlgorithms.cheapestPath(grid);
 		return null;
 	}
 	
@@ -115,7 +147,7 @@ public class GreedyDynamicAlgorithms {
 	}
 	
 	public static void main(String[] args) {
-		ArrayList<GreedyDynamicAlgorithms.Interval> blue = new ArrayList<GreedyDynamicAlgorithms.Interval>();
+		/*ArrayList<GreedyDynamicAlgorithms.Interval> blue = new ArrayList<GreedyDynamicAlgorithms.Interval>();
 		GreedyDynamicAlgorithms.Interval interval = new GreedyDynamicAlgorithms.Interval(0,2);
 		blue.add(interval);
 		interval = new GreedyDynamicAlgorithms.Interval(5,5);
@@ -141,7 +173,15 @@ public class GreedyDynamicAlgorithms {
 		interval = new GreedyDynamicAlgorithms.Interval(11,12);
 		red.add(interval);
 		
-		System.out.println(GreedyDynamicAlgorithms.recurseGreedyDynamicAlgorithm(red, blue, 0));
+		System.out.println(GreedyDynamicAlgorithms.recurseGreedyDynamicAlgorithm(red, blue, 0));*/
+
+		int[][] grid = {
+			{5,1,1},
+			{2,4,7},
+			{2,4,5},
+			{5,6,3}
+		};
+		GreedyDynamicAlgorithms.optimalGridPath(grid);		
 		return;
 	}
 }
