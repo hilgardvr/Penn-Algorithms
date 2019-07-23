@@ -52,7 +52,7 @@ public class GreedyDynamicAlgorithms {
 		return recurseGreedyDynamicAlgorithm(red, blue, 0);
 	}
 	
-	public static List<Direction> cheapestPath(int[][] grid) {
+	public static int[][] cheapestPath(int[][] grid) {
 		int xlength = grid[0].length;
 		int ylength = grid.length;
 
@@ -81,7 +81,7 @@ public class GreedyDynamicAlgorithms {
 			}
 			System.out.println();
 		}
-		return null;
+		return memo;
 	}
 
 	/**
@@ -93,8 +93,33 @@ public class GreedyDynamicAlgorithms {
 	 */
 	public static List<Direction> optimalGridPath(int[][] grid) {
 		//TODO
-		GreedyDynamicAlgorithms.cheapestPath(grid);
-		return null;
+		int memo[][] = GreedyDynamicAlgorithms.cheapestPath(grid);
+		List<Direction> directionList = new ArrayList<Direction>();
+		int xlength = memo[0].length - 1;
+		int ylength = memo.length - 1;
+		int xctr = 0;
+		int yctr = 0;
+		while (xctr < xlength || yctr < ylength) {
+			if (xctr + 1 <= xlength && yctr + 1 <= ylength) {
+				if (memo[yctr][xctr + 1] < memo[yctr + 1][xctr]) {
+					directionList.add(GreedyDynamicAlgorithms.Direction.RIGHT);
+					xctr++;
+				} else {
+					directionList.add(GreedyDynamicAlgorithms.Direction.DOWN);
+					yctr++;
+				}
+			} else if (xctr + 1 <= xlength) {
+				directionList.add(GreedyDynamicAlgorithms.Direction.RIGHT);
+				xctr++;
+			} else if (yctr + 1 <= ylength) {
+				directionList.add(GreedyDynamicAlgorithms.Direction.DOWN);
+				yctr++;
+			} else {
+				System.out.println("Error - Can't move anywhere");
+				break;
+			}
+		}
+		return directionList;
 	}
 	
 	/**
@@ -181,7 +206,7 @@ public class GreedyDynamicAlgorithms {
 			{2,4,5},
 			{5,6,3}
 		};
-		GreedyDynamicAlgorithms.optimalGridPath(grid);		
+		System.out.println(GreedyDynamicAlgorithms.optimalGridPath(grid));		
 		return;
 	}
 }
