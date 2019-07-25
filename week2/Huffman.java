@@ -34,6 +34,11 @@ public class Huffman {
 		 * Remember to store the final tree as a global variable, as you will need it
 		 * to decode your encrypted string
 		 */
+		for (Map.Entry<Character, Integer> entry : freqMap.entrySet()) {
+			System.out.println(entry.getKey() + "/" + entry.getValue());
+			Node node =  new Node(entry.getKey(), entry.getValue(), null, null);
+			huffman.add(node);
+		}
 	}
 	
 	/**
@@ -122,4 +127,13 @@ public class Huffman {
 		}
 	}
 
+	public static void main (String args[]) {
+		if (args.length < 1) {
+			System.out.println("Too few");
+			return;
+		} else {
+			Huffman huff = new Huffman(args[0]);
+			return;
+		}
+	}
 }
