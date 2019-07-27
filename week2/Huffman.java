@@ -7,6 +7,17 @@ public class Huffman {
 	private Node huffmanTree; //the huffman tree
 	private Map<Character, String> mapping; //maps characters to binary strings
 	
+
+	private void populateMapping(Node iter, String s) {
+		if (iter.left == null && iter.right == null) {
+			System.out.println(iter.letter + ":" + s);
+			mapping.put(iter.letter, s);
+			return;
+		}
+		populateMapping(iter.left, s + "0");
+		populateMapping(iter.right, s + "1");
+	}
+			
 	
 	/**
 	 * The Huffman constructor
@@ -35,10 +46,17 @@ public class Huffman {
 		 * to decode your encrypted string
 		 */
 		for (Map.Entry<Character, Integer> entry : freqMap.entrySet()) {
-			System.out.println(entry.getKey() + "/" + entry.getValue());
 			Node node =  new Node(entry.getKey(), entry.getValue(), null, null);
 			huffman.add(node);
 		}
+		while (huffman.size() > 1) {
+			Node node1 = huffman.poll();
+			Node node2 = huffman.poll();
+			Node newNode = new Node(null, node1.freq + node2.freq, node1, node2);
+			huffman.add(newNode);
+		}
+		huffmanTree = huffman.poll();
+		populateMapping(huffmanTree, "");
 	}
 	
 	/**
@@ -46,7 +64,11 @@ public class Huffman {
 	 */
 	public String encode() {
 		//TODO
-		return null;
+		String s = "";
+		for (char c : input.toCharArray()) {
+			s += mapping.get(c);
+		}
+		return s;
 	}
 	
 	/**
@@ -60,7 +82,18 @@ public class Huffman {
 	 */
 	public String decode(String encoding) {
 		//TODO
-		return null;
+		String s = "";
+		String find = "";
+		for (char c : encoding.toCharArray()) {
+			find += c;
+			for (Map.Entry<Character, String> entry : mapping.entrySet()) {
+				if (entry.getValue().equals(find)) {
+					s += entry.getKey();
+					find = "";
+				}
+			}
+		}	
+		return s;
 	}
 	
 	/**
@@ -133,6 +166,8 @@ public class Huffman {
 			return;
 		} else {
 			Huffman huff = new Huffman(args[0]);
+			System.out.println(args[0] + ":" + huff.encode());
+			System.out.println(huff.encode() + ":" + huff.decode(huff.encode()));
 			return;
 		}
 	}
