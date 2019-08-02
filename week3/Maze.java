@@ -49,30 +49,28 @@ public class Maze {
 		g = new Graph(n * n);
 		for (int y = 0; y < n; y++) {
 			for (int x = 0; x < n; x++) {
-				int iter = x;
-				//add vertices back
-				while (iter - 1 > 0 && grid[y][iter - 1] == 1) {
-					g.addEdge(y * x + x, y * x + iter - 1);
-					iter--;
-				}
 				//add vertices forward
-				iter = x;
-				while (iter + 1 < n && grid[y][iter + 1] == 1) {
-					g.addEdge(y * x + x, y * x + iter + 1);
-					iter++;
+				if (grid[y][x] > 0) {
+					int iter = x;
+					while (iter + 1 < n && grid[y][iter + 1] > 0) {
+						g.addEdge( (y * x) + x, (y * x) + iter + 1);
+						iter++;
+					}
+					iter = y;
+					while (iter + 1 < n && grid[iter + 1][x] > 0) {
+						g.addEdge((y * x) + x, ((iter + 1) * x) + x);
+						iter++;
+					} 
 				}
-				iter = y;
-				while (iter - 1 > 0 && grid[iter - 1][x] == 1) {
-					g.addEdge(y * x + x, (iter - 1) * x + x);
-					iter--;
-				} 
-				iter = y;
-				while (iter + 1 < n && grid[iter + 1][x] == 1) {
-					g.addEdge(y * x + x, (iter + 1) * x + x);
-					iter++;
-				} 
 			}
 		}
+
+		for (int i = 0; i < size; i++) {
+				System.out.println("{x: " + ((i / n) + (i % n)) + ", y: " + (i/n) + "}: ");
+				System.out.println(g.neighbors(i));
+			}
+			//System.out.println();
+		//}
 	}
 	
 	/**
