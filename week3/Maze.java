@@ -82,44 +82,28 @@ public class Maze {
 	public List<Move> solveMaze() {
 		//TODO
 		boolean[] visited = new boolean[g.size()];
-		Stack<Integer> stack = new Stack<Integer>();
-		List<Move> moves = new ArrayList<Move>();
+		Stack<Integer> moves = new Stack<Integer>();
 		visited[startVertex] = true;
-		List<Integer> neighbors = g.neighbors(startVertex);
-		for (Integer i : neighbors) {
-			stack.push(i);
-		}
 		int current = startVertex;
-		System.out.println("Starting at: " + current);
-		while (!stack.empty() && current != endVertex) {
-			int vertex = stack.pop();
-			if (vertex < current) {
-				if (current - 1 == vertex) {
-					moves.add(Move.LEFT);
-				} else {
-					System.out.println("current->vertex " + current + "->" + vertex);
-					moves.add(Move.UP);
-				}
-			}
-			if (vertex > current) {
-				if (current + 1 == vertex) {
-					moves.add(Move.RIGHT);
-				} else {
-					System.out.println("current->vertex " + current + "->" + vertex);
-					moves.add(Move.DOWN);
-				}
-			}
-			neighbors = g.neighbors(vertex);
+		while (current != endVertex && !moves.empty()) {
+			List<Integer> neighbors = g.neighbors(current);
+			boolean newMove = false;
 			for (Integer i : neighbors) {
 				if (!visited[i]) {
-					stack.push(i);
+					moves.push(i);
+					current = i;
+					newMove = true;
+					visited[i] = true;
+					break;
 				}
 			}
-			current = vertex;
-			visited[current] = true;
+			if (!newMove) {
+				moves.pop();
+				current = moves.peek();
+			}
 		}
-					
-		return moves;
+		System.out.println(moves);
+		return null;//moves;
 	}
 	
 	
