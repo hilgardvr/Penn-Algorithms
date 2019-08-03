@@ -49,28 +49,21 @@ public class Maze {
 		g = new Graph(n * n);
 		for (int y = 0; y < n; y++) {
 			for (int x = 0; x < n; x++) {
-				//add vertices forward
 				if (grid[y][x] > 0) {
-					int iter = x;
-					while (iter + 1 < n && grid[y][iter + 1] > 0) {
-						g.addEdge( (y * x) + x, (y * x) + iter + 1);
-						iter++;
+					if (x < (n - 1) && grid[y][x + 1] > 0) {
+						g.addEdge((y * n) + x, y * n + x + 1);
 					}
-					iter = y;
-					while (iter + 1 < n && grid[iter + 1][x] > 0) {
-						g.addEdge((y * x) + x, ((iter + 1) * x) + x);
-						iter++;
-					} 
+					if (y < (n - 1) && grid[y + 1][x] > 0) {
+						g.addEdge((y * n) + x, ((y + 1) * n) + x);
+					}
 				}
 			}
 		}
 
-		for (int i = 0; i < size; i++) {
-				System.out.println("{x: " + ((i / n) + (i % n)) + ", y: " + (i/n) + "}: ");
-				System.out.println(g.neighbors(i));
-			}
-			//System.out.println();
-		//}
+		/*for (int i = 0; i < size; i++) {
+			System.out.println("{x: " + (i % n) + ", y: " + (i/n) + "}: ");
+			System.out.println(g.neighbors(i));
+		}*/
 	}
 	
 	/**
@@ -88,7 +81,45 @@ public class Maze {
 	 */
 	public List<Move> solveMaze() {
 		//TODO
-		return null;
+		boolean[] visited = new boolean[g.size()];
+		Stack<Integer> stack = new Stack<Integer>();
+		List<Move> moves = new ArrayList<Move>();
+		visited[startVertex] = true;
+		List<Integer> neighbors = g.neighbors(startVertex);
+		for (Integer i : neighbors) {
+			stack.push(i);
+		}
+		int current = startVertex;
+		System.out.println("Starting at: " + current);
+		while (!stack.empty() && current != endVertex) {
+			int vertex = stack.pop();
+			if (vertex < current) {
+				if (current - 1 == vertex) {
+					moves.add(Move.LEFT);
+				} else {
+					System.out.println("current->vertex " + current + "->" + vertex);
+					moves.add(Move.UP);
+				}
+			}
+			if (vertex > current) {
+				if (current + 1 == vertex) {
+					moves.add(Move.RIGHT);
+				} else {
+					System.out.println("current->vertex " + current + "->" + vertex);
+					moves.add(Move.DOWN);
+				}
+			}
+			neighbors = g.neighbors(vertex);
+			for (Integer i : neighbors) {
+				if (!visited[i]) {
+					stack.push(i);
+				}
+			}
+			current = vertex;
+			visited[current] = true;
+		}
+					
+		return moves;
 	}
 	
 	
@@ -130,6 +161,8 @@ public class Maze {
 	public static void main(String[] args) {
 		try {
 			Maze maze = new Maze(args[0]);
+			List<Move> solution = maze.solveMaze();
+			System.out.println(solution);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
