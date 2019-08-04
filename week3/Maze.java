@@ -85,6 +85,7 @@ public class Maze {
 		Stack<Integer> moves = new Stack<Integer>();
 		visited[startVertex] = true;
 		int current = startVertex;
+		moves.push(current);
 		while (current != endVertex && !moves.empty()) {
 			List<Integer> neighbors = g.neighbors(current);
 			boolean newMove = false;
@@ -102,8 +103,30 @@ public class Maze {
 				current = moves.peek();
 			}
 		}
-		System.out.println(moves);
-		return null;//moves;
+		List<Integer> intMoves = new ArrayList(moves);
+		List<Move> finalMoves = new ArrayList<Move>();
+		//remove start vertex
+		current = intMoves.get(0);
+		intMoves.remove(0);
+		for (Integer nextMove : intMoves) {
+			if (nextMove > current) {
+				if (nextMove - 1 == current) {
+					finalMoves.add(Move.RIGHT);
+				} else {
+					finalMoves.add(Move.DOWN);
+				}
+			} else if (nextMove < current) {
+				if (nextMove + 1 == current) {
+					finalMoves.add(Move.LEFT);
+				} else {
+					finalMoves.add(Move.UP);
+				}
+			}
+			current = nextMove;
+		}
+		//System.out.println(intMoves);
+			
+		return finalMoves;
 	}
 	
 	
